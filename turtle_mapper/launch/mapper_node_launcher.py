@@ -16,7 +16,7 @@ def generate_launch_description():
         
         # Node for dynamic mapping
         Node(
-            package='your_package_name',
+            package='turtle_mapper',
             executable='dynamic_mapper',
             name='dynamic_mapper',
             parameters=[{'map_resolution': 0.05}]
