@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'mapper = turtle_mapper.mapper_node:main'
+            'mapper = turtle_mapper.mapper_fast_slam_node:main'
         ],
     },
 )
