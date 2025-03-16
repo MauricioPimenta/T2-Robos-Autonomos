@@ -1,0 +1,83 @@
+# ROS 2 - Pacote de Processamento de Mapas
+
+Este pacote ROS 2 contém três nós para processar mapas e detectar objetos (alternativas para a mesma coisa):
+1. **MapProcessorNode (Imagem PGM)** - Recebe mapas como imagens `.pgm`, detecta **esferas e caixas** e publica as detecções.
+2. **MapProcessorNode2 (OccupancyGrid)** - Recebe mapas no formato `OccupancyGrid`, detecta componentes conectados e publica bounding boxes.
+3. **MapProcessorNode3 (Imagem PGM - Alternativa)** - Similar ao primeiro nó, mas baseado em outra abordagem de processamento.
+
+## 🛠 Dependências
+Antes de rodar o pacote, instale as seguintes dependências:
+
+```bash
+sudo apt update && sudo apt install -y \
+    ros-humble-rclpy \
+    ros-humble-sensor-msgs \
+    ros-humble-std-msgs \
+    ros-humble-nav-msgs \
+    ros-humble-vision-msgs \
+    ros-humble-cv-bridge \
+    python3-opencv \
+    python3-numpy
+```
+
+Caso tenha um workspace ROS 2 configurado, você pode instalar todas as dependências do pacote com:
+```bash
+rosdep install --from-paths src --ignore-src -r -y
+```
+## 📌 Compile o pacote
+Va até o workspace
+```bash
+colcon build && source install/setup.bash
+```
+
+## 📌 Como Rodar os Nós
+
+### 1️⃣ **Rodando o nó MapProcessorNode (PGM)**
+Este nó recebe imagens `.pgm` via `sensor_msgs/Image` e detecta esferas e caixas.
+
+```bash
+ros2 run map_processor map_processor
+(agora em outro terminal:)
+python3 image.py
+```
+image.py é um scrpit que publica a imagem mapateste.pgm no tópico /map_image
+
+Para testar o nó, publique uma imagem no tópico correto:
+```bash
+ros2 topic pub /map_image sensor_msgs/Image '{...}'
+```
+
+### 2️⃣ **Rodando o nó MapProcessorNode2 (OccupancyGrid)** ''NAO SEI SE FUNCIONA NAO TESTEI''
+Este nó recebe mapas `OccupancyGrid`, processa os componentes conectados e publica bounding boxes.
+
+```bash
+ros2 run map_processor map_processor2
+```
+
+Para testar:
+```bash
+ros2 topic pub /custom_map nav_msgs/OccupancyGrid '{...}'
+```
+
+### 3️⃣ **Rodando o nó MapProcessorNode3 (PGM - Alternativa)**
+Outro nó baseado em `sensor_msgs/Image` que detecta objetos de forma diferente.
+
+```bash
+ros2 run map_processor map_processor3
+(agora em outro terminal:)
+python3 image.py
+```
+image.py é um scrpit que publica a imagem mapateste.pgm no tópico /map_image
+
+## 📡 Publicação e Visualização dos Resultados
+Os nós publicam as detecções nos seguintes tópicos:
+- `/detected_objects` (String) - Lista de objetos detectados e suas posições.
+- `/detections` (BoundingBox2DArray) - Bounding boxes dos objetos detectados.
+- `/rendered` (Image) - Imagem do mapa com detecções destacadas.
+
+Para visualizar as mensagens publicadas:
+```bash
+ros2 topic echo /detected_objects (MapProcessorNode 1 E 3)
+ros2 topic echo /detections (MapProcessorNode2)
+```
+
